@@ -15,7 +15,8 @@ data class Item(
   val id: Long,
   val by: String,
   val title: String,
-  val type: String
+  val type: String,
+  val url: String? = null
 )
 
 interface HackerNewsApi {
