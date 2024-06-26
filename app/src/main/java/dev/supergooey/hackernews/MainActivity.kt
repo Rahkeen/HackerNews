@@ -5,15 +5,33 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,26 +59,108 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App() {
-  val model = viewModel<AppViewModel>()
+  val model = viewModel<StoriesViewModel>()
   val state by model.state.collectAsState()
 
   Scaffold { innerPadding ->
-    Column(modifier = Modifier
-      .fillMaxSize()
-      .padding(innerPadding)) {
-      state.stories.forEach { story ->
-        Text(story.title)
-      }
+    StoriesScreen(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding),
+      state = state
+    )
+  }
+}
+
+@Preview
+@Composable
+private fun StorieScreenPreview() {
+  HackerNewsTheme {
+    StoriesScreen(
+      modifier = Modifier.fillMaxSize(),
+      state = StoriesState(
+        stories = listOf(
+          Item(
+            id = 1L,
+            title = "Hello There",
+            by = "heyrikin",
+            type = "story"
+          ),
+          Item(
+            id = 1L,
+            title = "Nice to Meet You",
+            by = "vasant",
+            type = "story"
+          ),
+        )
+      )
+    )
+  }
+}
+
+@Composable
+fun StoriesScreen(modifier: Modifier = Modifier, state: StoriesState) {
+  LazyColumn(modifier = modifier) {
+    items(state.stories) { item ->
+      StoryRow(item)
     }
   }
 }
 
-data class AppState(
+@Preview
+@Composable
+private fun StoryRowPreview() {
+  StoryRow(
+    item = Item(
+      id = 1L,
+      by = "heyrikin",
+      title = "A theory on why NIA is a terrible example of a demo application",
+      type = "Story"
+    )
+  )
+}
+
+@Composable
+fun StoryRow(item: Item) {
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .heightIn(min = 80.dp)
+      .padding(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(16.dp)
+  ) {
+    // title + subtitle
+    Column(
+      modifier = Modifier
+        .fillMaxHeight()
+        .weight(1f),
+      verticalArrangement = Arrangement.Center
+    ) {
+      Text(
+        item.title,
+        color = Color.Black,
+        fontSize = 20.sp,
+        fontWeight = FontWeight(500),
+        lineHeight = 1.em
+      )
+      Text(item.by, color = Color.DarkGray)
+    }
+
+    Icon(
+      modifier = Modifier.size(24.dp),
+      imageVector = Icons.Default.KeyboardArrowUp,
+      contentDescription = "Comments"
+    )
+  }
+}
+
+data class StoriesState(
   val stories: List<Item>
 )
 
-class AppViewModel() : ViewModel() {
-  private val internalState = MutableStateFlow(AppState(stories = emptyList()))
+class StoriesViewModel() : ViewModel() {
+  private val internalState = MutableStateFlow(StoriesState(stories = emptyList()))
   val state = internalState.asStateFlow()
 
   init {
