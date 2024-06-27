@@ -1,19 +1,30 @@
 package dev.supergooey.hackernews.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import dev.supergooey.hackernews.R
 
-// Set of Material typography styles to start with
+val plex = FontFamily(
+  Font(resId = R.font.ibm_plex_sans_regular, weight = FontWeight.Normal),
+  Font(resId = R.font.ibm_plex_sans_medium, weight = FontWeight.Medium),
+  Font(resId = R.font.ibm_plex_sans_bold, weight = FontWeight.Bold),
+)
+
 val Typography = Typography(
-  bodyLarge = TextStyle(
-    fontFamily = FontFamily.Default,
+  titleSmall = TextStyle(
+    fontFamily = plex,
+    fontWeight = FontWeight.Bold,
+    fontSize = 18.sp
+  ),
+  labelSmall = TextStyle(
+    fontFamily = plex,
     fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
-    letterSpacing = 0.5.sp
+    fontSize = 14.sp
   )
   /* Other default text styles to override
     titleLarge = TextStyle(

@@ -13,8 +13,9 @@ private const val BASE_URL = "https://hacker-news.firebaseio.com/v0/"
 @Serializable
 data class Item(
   val id: Long,
-  val by: String,
   val title: String,
+  val by: String,
+  val score: Int,
   val type: String,
   val url: String? = null
 )

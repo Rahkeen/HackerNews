@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -68,13 +69,15 @@ private fun StoriesScreenPreview() {
             id = 1L,
             title = "Hello There",
             by = "heyrikin",
+            score = 10,
             type = "story"
           ),
           Item(
             id = 1L,
             title = "Nice to Meet You",
             by = "vasant",
-            type = "story"
+            score = 5,
+            type = "story",
           ),
         )
       ),
@@ -92,7 +95,9 @@ private fun StoryRowPreview() {
       id = 1L,
       by = "heyrikin",
       title = "A theory on why NIA is a terrible example of a demo application",
-      type = "Story"
+      score = 10,
+      type = "Story",
+      url = "www.google.com",
     )
   ) {}
 }
@@ -110,7 +115,6 @@ fun StoryRow(item: Item, onClick: (Item) -> Unit) {
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(16.dp)
   ) {
-    // title + subtitle
     Column(
       modifier = Modifier
         .fillMaxHeight()
@@ -118,19 +122,20 @@ fun StoryRow(item: Item, onClick: (Item) -> Unit) {
       verticalArrangement = Arrangement.Center
     ) {
       Text(
-        item.title,
+        text = item.title,
         color = Color.Black,
-        fontSize = 20.sp,
-        fontWeight = FontWeight(500),
-        lineHeight = 1.em
+        style = MaterialTheme.typography.titleSmall
       )
-      Text(item.by, color = HNOrange)
+      Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(text = "${item.score}", style = MaterialTheme.typography.labelSmall)
+        Text(text = "•", style = MaterialTheme.typography.labelSmall)
+        Text(
+          text = item.by,
+          color = HNOrange,
+          style = MaterialTheme.typography.labelSmall,
+          fontWeight = FontWeight.Medium
+        )
+      }
     }
-
-    Icon(
-      modifier = Modifier.size(24.dp),
-      imageVector = Icons.Default.KeyboardArrowUp,
-      contentDescription = "Comments"
-    )
   }
 }
