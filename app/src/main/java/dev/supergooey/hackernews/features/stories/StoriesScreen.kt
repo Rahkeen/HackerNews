@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.lifecycle.viewModelScope
 import dev.supergooey.hackernews.data.HackerNewsClient
 import dev.supergooey.hackernews.data.Item
 import dev.supergooey.hackernews.ui.theme.HNOrange
+import dev.supergooey.hackernews.ui.theme.HackerNewsTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,14 +43,44 @@ import kotlinx.coroutines.withContext
 fun StoriesScreen(
   modifier: Modifier = Modifier,
   state: StoriesState,
-  actions: (StoriesAction) -> Unit
+  actions: (StoriesAction) -> Unit,
+  navigation: (String) -> Unit
 ) {
   LazyColumn(modifier = modifier) {
     items(state.stories) { item ->
       StoryRow(item) {
-        actions(StoriesAction.SelectStory(it.url!!))
+        actions(StoriesAction.SelectStory(it.id))
+        navigation("story/${it.id}")
       }
     }
+  }
+}
+
+@Preview
+@Composable
+private fun StoriesScreenPreview() {
+  HackerNewsTheme {
+    StoriesScreen(
+      modifier = Modifier.fillMaxSize(),
+      state = StoriesState(
+        stories = listOf(
+          Item(
+            id = 1L,
+            title = "Hello There",
+            by = "heyrikin",
+            type = "story"
+          ),
+          Item(
+            id = 1L,
+            title = "Nice to Meet You",
+            by = "vasant",
+            type = "story"
+          ),
+        )
+      ),
+      actions = {},
+      navigation = {}
+    )
   }
 }
 
@@ -104,11 +136,14 @@ fun StoryRow(item: Item, onClick: (Item) -> Unit) {
 }
 
 data class StoriesState(
-  val stories: List<Item>
-)
+  val stories: List<Item>,
+  val selectedId: Long? = null
+) {
+  val selectedItem = stories.find { it.id == selectedId }
+}
 
 sealed class StoriesAction {
-  data class SelectStory(val url: String): StoriesAction()
+  data class SelectStory(val id: Long): StoriesAction()
 }
 
 class StoriesViewModel() : ViewModel() {
@@ -122,7 +157,9 @@ class StoriesViewModel() : ViewModel() {
   fun actions(action: StoriesAction) {
     when (action) {
       is StoriesAction.SelectStory -> {
-
+        internalState.update { current ->
+          current.copy(selectedId = action.id)
+        }
       }
     }
   }
