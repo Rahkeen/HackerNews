@@ -12,6 +12,7 @@ okhttp = "4.12.0"
 kotlinx-serialization-json = "1.6.3"
 viewmodel = "2.8.2"
 navigation = "2.8.0-beta04"
+accompanist = "0.34.0"
 composeBom = "2024.06.00"
 
 [libraries]
@@ -37,6 +38,8 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
+accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

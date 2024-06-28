@@ -7,6 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
+import dev.supergooey.hackernews.features.stories.StoriesDestinations.Closeup
 import dev.supergooey.hackernews.features.stories.StoriesDestinations.Feed
 import kotlinx.serialization.Serializable
 
@@ -16,6 +18,9 @@ data object Stories
 sealed interface StoriesDestinations {
   @Serializable
   data object Feed: StoriesDestinations
+
+  @Serializable
+  data class Closeup(val url: String)
 }
 
 fun NavGraphBuilder.storiesGraph(navController: NavController) {
@@ -27,9 +32,13 @@ fun NavGraphBuilder.storiesGraph(navController: NavController) {
         state = state,
         actions = model::actions,
         navigation = {
-          // TODO
+          navController.navigate(Closeup(it))
         }
       )
+    }
+    composable<Closeup> { entry ->
+      val closeup: Closeup =  entry.toRoute()
+      StoryScreen(closeup.url)
     }
   }
 }

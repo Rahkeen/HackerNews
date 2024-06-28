@@ -21,13 +21,13 @@ data class StoriesState(
 }
 
 sealed interface StoryItem {
-  data class Loading(val id: Long): StoryItem
+  data class Loading(val id: Long) : StoryItem
   data class Content(
     val id: Long,
     val title: String,
     val author: String,
     val url: String
-  ): StoryItem
+  ) : StoryItem
 }
 
 sealed class StoriesAction {
@@ -54,9 +54,7 @@ class StoriesViewModel() : ViewModel() {
             ids.take(20).forEach { id ->
               val item = HackerNewsClient.api.getItem(id)
               Log.d("API", "Story Loaded: ${item.url}")
-              if (items.contains(item) || item.type != "story") {
-                // replace item
-              } else {
+              if (item.type == "story" && item.url != null) {
                 internalState.update { current ->
                   current.copy(
                     stories = current.stories.toMutableList().apply { add(item) }.toList()
