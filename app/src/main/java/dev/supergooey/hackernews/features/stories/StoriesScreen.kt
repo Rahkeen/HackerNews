@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,8 +27,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import dev.supergooey.hackernews.data.Item
+import dev.supergooey.hackernews.features.comments.CommentsDestinations
 import dev.supergooey.hackernews.ui.theme.HNOrange
 import dev.supergooey.hackernews.ui.theme.HackerNewsTheme
 
@@ -33,7 +39,7 @@ fun StoriesScreen(
   modifier: Modifier = Modifier,
   state: StoriesState,
   actions: (StoriesAction) -> Unit,
-  navigation: (String) -> Unit
+  navigation: (StoriesNavigation) -> Unit
 ) {
   Column(
     modifier = modifier,
@@ -41,14 +47,31 @@ fun StoriesScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
     TitleDisplay()
-    LazyColumn(modifier = Modifier
-      .fillMaxWidth()
-      .weight(1f)) {
+    LazyColumn(
+      modifier = Modifier
+        .fillMaxWidth()
+        .weight(1f)
+    ) {
       items(state.stories) { item ->
-        StoryRow(item) {
-          actions(StoriesAction.SelectStory(it.id))
-          navigation(it.url.orEmpty())
-        }
+        StoryRow(
+          item = item,
+          onClick = {
+            actions(StoriesAction.SelectStory(it.id))
+            navigation(
+              StoriesNavigation.GoToStory(
+                closeup = StoriesDestinations.Closeup(it.url!!)
+              )
+            )
+          },
+          onCommentClicked = {
+            actions(StoriesAction.SelectComments(it.id))
+            navigation(
+              StoriesNavigation.GoToComments(
+                comments = CommentsDestinations.Comments(it.id)
+              )
+            )
+          }
+        )
       }
     }
   }
@@ -57,21 +80,21 @@ fun StoriesScreen(
 @Preview
 @Composable
 private fun TitleDisplay() {
-    Text(
-      modifier = Modifier.drawBehind {
-        drawLine(
-          start = Offset(0f, size.height-10),
-          end = Offset(size.width, size.height-10),
-          color = HNOrange,
-          strokeWidth = 6f,
-          cap = StrokeCap.Round
-        )
-      },
-      text = "Top Stories",
-      style = MaterialTheme.typography.labelSmall,
-      fontWeight = FontWeight.Medium,
-      fontSize = 24.sp
-    )
+  Text(
+    modifier = Modifier.drawBehind {
+      drawLine(
+        start = Offset(0f, size.height - 10),
+        end = Offset(size.width, size.height - 10),
+        color = HNOrange,
+        strokeWidth = 6f,
+        cap = StrokeCap.Round
+      )
+    },
+    text = "Top Stories",
+    style = MaterialTheme.typography.labelSmall,
+    fontWeight = FontWeight.Medium,
+    fontSize = 24.sp
+  )
 }
 
 @Preview
@@ -87,7 +110,9 @@ private fun StoriesScreenPreview() {
             title = "Hello There",
             by = "heyrikin",
             score = 10,
-            type = "story"
+            type = "story",
+            descendants = 0,
+            kids = emptyList()
           ),
           Item(
             id = 1L,
@@ -95,6 +120,8 @@ private fun StoriesScreenPreview() {
             by = "vasant",
             score = 5,
             type = "story",
+            descendants = 0,
+            kids = emptyList()
           ),
         )
       ),
@@ -116,13 +143,21 @@ private fun StoryRowPreview() {
         score = 10,
         type = "Story",
         url = "www.google.com",
-      )
-    ) {}
+        descendants = 5,
+        kids = emptyList()
+      ),
+      onClick = {},
+      onCommentClicked = {}
+    )
   }
 }
 
 @Composable
-fun StoryRow(item: Item, onClick: (Item) -> Unit) {
+fun StoryRow(
+  item: Item,
+  onClick: (Item) -> Unit,
+  onCommentClicked: (Item) -> Unit
+) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -132,7 +167,7 @@ fun StoryRow(item: Item, onClick: (Item) -> Unit) {
       }
       .padding(8.dp),
     verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(16.dp)
+    horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.CenterHorizontally)
   ) {
     Column(
       modifier = Modifier
@@ -155,6 +190,28 @@ fun StoryRow(item: Item, onClick: (Item) -> Unit) {
           fontWeight = FontWeight.Medium
         )
       }
+    }
+
+    Column(
+      modifier = Modifier
+        .fillMaxHeight()
+        .padding(end = 16.dp)
+        .clickable {
+          onCommentClicked(item)
+        },
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      Icon(
+        modifier = Modifier.size(24.dp),
+        imageVector = Icons.Default.Person,
+        contentDescription = ""
+      )
+      Text(
+        text = "${item.descendants}",
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Medium
+      )
     }
   }
 }

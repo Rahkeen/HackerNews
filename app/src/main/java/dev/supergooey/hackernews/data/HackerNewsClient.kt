@@ -17,7 +17,9 @@ data class Item(
   val by: String,
   val score: Int,
   val type: String,
-  val url: String? = null
+  val url: String? = null,
+  val descendants: Int? = null,
+  val kids: List<Long>? = null
 )
 
 interface HackerNewsApi {

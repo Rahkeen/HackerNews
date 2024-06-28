@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.supergooey.hackernews.ui.theme.HackerNewsTheme
 
 @Composable
-fun CommentsScreen() {
+fun CommentsScreen(state: CommentsState) {
   Column(modifier = Modifier.fillMaxSize()) {
     Text("Hello Comments")
   }
@@ -19,6 +19,8 @@ fun CommentsScreen() {
 @Composable
 private fun CommentsScreenPreview() {
   HackerNewsTheme {
-    CommentsScreen()
+    CommentsScreen(
+      state = CommentsState.empty
+    )
   }
 }

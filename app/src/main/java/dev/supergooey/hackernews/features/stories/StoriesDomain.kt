@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.supergooey.hackernews.data.HackerNewsClient
 import dev.supergooey.hackernews.data.Item
+import dev.supergooey.hackernews.features.comments.CommentsDestinations
 import dev.supergooey.hackernews.features.stories.StoriesAction.LoadStories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,13 @@ sealed interface StoryItem {
 sealed class StoriesAction {
   data object LoadStories : StoriesAction()
   data class SelectStory(val id: Long) : StoriesAction()
+  data class SelectComments(val id: Long): StoriesAction()
+}
+
+// TODO: Second pass at Navigation Setup
+sealed interface StoriesNavigation {
+  data class GoToStory(val closeup: StoriesDestinations.Closeup): StoriesNavigation
+  data class GoToComments(val comments: CommentsDestinations.Comments): StoriesNavigation
 }
 
 class StoriesViewModel() : ViewModel() {
@@ -46,7 +54,6 @@ class StoriesViewModel() : ViewModel() {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
             val ids = HackerNewsClient.api.getTopStoryIds()
-            val items = mutableListOf<Item>()
             // now for each ID I need to load the item.
             ids.take(20).forEach { id ->
               val item = HackerNewsClient.api.getItem(id)
@@ -64,6 +71,10 @@ class StoriesViewModel() : ViewModel() {
       }
 
       is StoriesAction.SelectStory -> {
+        // TODO
+      }
+
+      is StoriesAction.SelectComments -> {
         // TODO
       }
     }

@@ -31,8 +31,15 @@ fun NavGraphBuilder.storiesGraph(navController: NavController) {
       StoriesScreen(
         state = state,
         actions = model::actions,
-        navigation = {
-          navController.navigate(Closeup(it))
+        navigation = { place ->
+          when (place) {
+            is StoriesNavigation.GoToComments -> {
+              navController.navigate(place.comments)
+            }
+            is StoriesNavigation.GoToStory -> {
+              navController.navigate(place.closeup)
+            }
+          }
         }
       )
     }
