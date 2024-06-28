@@ -2,6 +2,7 @@ package dev.supergooey.hackernews.features.stories
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -17,10 +18,10 @@ data object Stories
 
 sealed interface StoriesDestinations {
   @Serializable
-  data object Feed: StoriesDestinations
+  data object Feed : StoriesDestinations
 
   @Serializable
-  data class Closeup(val url: String)
+  data class Closeup(val url: String) : StoriesDestinations
 }
 
 fun NavGraphBuilder.storiesGraph(navController: NavController) {

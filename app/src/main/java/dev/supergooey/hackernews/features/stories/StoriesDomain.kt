@@ -15,10 +15,7 @@ import kotlinx.coroutines.withContext
 
 data class StoriesState(
   val stories: List<Item>,
-  val selectedId: Long? = null
-) {
-  val selectedItem = stories.find { it.id == selectedId }
-}
+)
 
 sealed interface StoryItem {
   data class Loading(val id: Long) : StoryItem
@@ -67,9 +64,7 @@ class StoriesViewModel() : ViewModel() {
       }
 
       is StoriesAction.SelectStory -> {
-        internalState.update { current ->
-          current.copy(selectedId = action.id)
-        }
+        // TODO
       }
     }
   }
