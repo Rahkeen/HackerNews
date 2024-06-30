@@ -3,7 +3,7 @@ package dev.supergooey.hackernews.features.stories
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.supergooey.hackernews.data.HackerNewsClient
+import dev.supergooey.hackernews.data.HackerNewsBaseClient
 import dev.supergooey.hackernews.data.Item
 import dev.supergooey.hackernews.features.comments.CommentsDestinations
 import dev.supergooey.hackernews.features.stories.StoriesAction.LoadStories
@@ -53,10 +53,10 @@ class StoriesViewModel() : ViewModel() {
       LoadStories -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
-            val ids = HackerNewsClient.api.getTopStoryIds()
+            val ids = HackerNewsBaseClient.api.getTopStoryIds()
             // now for each ID I need to load the item.
             ids.take(20).forEach { id ->
-              val item = HackerNewsClient.api.getItem(id)
+              val item = HackerNewsBaseClient.api.getItem(id)
               Log.d("API", "Story Loaded: ${item.url}")
               if (item.type == "story" && item.url != null) {
                 internalState.update { current ->
