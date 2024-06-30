@@ -176,7 +176,7 @@ fun StoryRow(
       verticalArrangement = Arrangement.Center
     ) {
       Text(
-        text = item.title,
+        text = item.title ?: "",
         color = Color.Black,
         style = MaterialTheme.typography.titleSmall
       )
@@ -184,7 +184,7 @@ fun StoryRow(
         Text(text = "${item.score}", style = MaterialTheme.typography.labelSmall)
         Text(text = "•", style = MaterialTheme.typography.labelSmall)
         Text(
-          text = item.by,
+          text = item.by ?: "",
           color = HNOrange,
           style = MaterialTheme.typography.labelSmall,
           fontWeight = FontWeight.Medium

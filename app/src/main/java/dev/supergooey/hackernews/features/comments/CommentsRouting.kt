@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
-
 sealed interface CommentsDestinations {
   @Serializable
   data class Comments(val storyId: Long) : CommentsDestinations

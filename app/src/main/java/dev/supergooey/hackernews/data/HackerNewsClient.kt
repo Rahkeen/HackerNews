@@ -13,13 +13,14 @@ private const val BASE_URL = "https://hacker-news.firebaseio.com/v0/"
 @Serializable
 data class Item(
   val id: Long,
-  val title: String,
-  val by: String,
-  val score: Int,
   val type: String,
+  val by: String? = null,
+  val title: String? = null,
+  val score: Int? = null,
   val url: String? = null,
   val descendants: Int? = null,
-  val kids: List<Long>? = null
+  val kids: List<Long>? = null,
+  val text: String? = null
 )
 
 interface HackerNewsApi {
