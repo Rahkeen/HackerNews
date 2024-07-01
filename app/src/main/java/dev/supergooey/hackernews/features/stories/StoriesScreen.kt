@@ -1,5 +1,6 @@
 package dev.supergooey.hackernews.features.stories
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -162,6 +163,7 @@ fun StoryRow(
     modifier = Modifier
       .fillMaxWidth()
       .heightIn(min = 80.dp)
+      .background(color = MaterialTheme.colorScheme.background)
       .clickable {
         onClick(item)
       }
@@ -177,7 +179,6 @@ fun StoryRow(
     ) {
       Text(
         text = item.title ?: "",
-        color = Color.Black,
         style = MaterialTheme.typography.titleSmall
       )
       Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

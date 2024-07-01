@@ -17,7 +17,7 @@ data class ItemResponse(
   val title: String? = null,
   val author: String? = null,
   val text: String? = null,
-  val score: Int? = null,
+  val points: Int? = null,
 )
 
 interface HackerNewsAlgoliaApi {

@@ -14,20 +14,35 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 data class CommentsState(
+  val title: String,
+  val author: String,
+  val points: Int,
   val comments: List<CommentState>
 ) {
   companion object {
     val empty = CommentsState(
+      title = "",
+      author = "",
+      points = 0,
       comments = emptyList()
     )
   }
+
+  val headerState = HeaderState(title, author, points)
 }
 
 data class CommentState(
   val id: Long,
+  val author: String,
   val content: String,
   val children: List<CommentState>,
   val level: Int = 0,
+)
+
+data class HeaderState(
+  val title: String,
+  val author: String,
+  val points: Int
 )
 
 class CommentsViewModel(private val itemId: Long) : ViewModel() {
@@ -43,6 +58,9 @@ class CommentsViewModel(private val itemId: Long) : ViewModel() {
         }
         internalState.update {
           CommentsState(
+            title = response.title ?: "",
+            author = response.author ?: "",
+            points = response.points ?: 0,
             comments = comments
           )
         }
@@ -55,6 +73,7 @@ class CommentsViewModel(private val itemId: Long) : ViewModel() {
 
     return CommentState(
       id = id,
+      author = author ?: "",
       content = text ?: "",
       children = children.map { child ->
         child.createCommentState(level + 1)
