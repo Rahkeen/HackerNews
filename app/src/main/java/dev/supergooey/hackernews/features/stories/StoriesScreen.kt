@@ -196,7 +196,7 @@ fun StoryRow(
       modifier = Modifier
         .wrapContentWidth()
         .fillMaxHeight()
-        .padding(hor = 16.dp)
+        .padding(horizontal = 16.dp)
         .clickable {
           onCommentClicked(item)
         },
