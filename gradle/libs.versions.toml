@@ -11,6 +11,7 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 kotlinx-serialization-json = "1.6.3"
 viewmodel = "2.8.2"
+datastore = "1.1.1"
 navigation = "2.8.0-beta04"
 accompanist = "0.34.0"
 composeBom = "2024.06.00"
@@ -23,7 +24,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewmodel" }
-androidx-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref = "navigation"}
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref = "navigation" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
