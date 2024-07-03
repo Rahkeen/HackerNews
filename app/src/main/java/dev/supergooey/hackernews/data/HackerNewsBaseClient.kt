@@ -24,7 +24,7 @@ data class Item(
 )
 
 interface HackerNewsBaseApi {
-  @GET("topstories.json")
+  @GET("newstories.json")
   suspend fun getTopStoryIds(): List<Long>
 
   @GET("item/{id}.json")

@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.supergooey.hackernews.features.comments.commentsRoutes
 import dev.supergooey.hackernews.features.login.Login
 import dev.supergooey.hackernews.features.login.LoginScreen
+import dev.supergooey.hackernews.features.stories.Stories
 import dev.supergooey.hackernews.features.stories.storiesGraph
 import dev.supergooey.hackernews.ui.theme.HackerNewsTheme
 
@@ -54,13 +55,9 @@ fun App() {
       exitTransition = { slideOut { IntOffset(x = -it.width / 3, y = 0) } + fadeOut() },
       popEnterTransition = { slideIn { IntOffset(x = -it.width, y = 0) } },
       popExitTransition = { slideOut { IntOffset(x = it.width, y = 0) } },
-      startDestination = Login
+      startDestination = Stories
     ) {
-      composable<Login> {
-        LoginScreen()
-      }
       storiesGraph(navController)
-
       commentsRoutes()
     }
   }
