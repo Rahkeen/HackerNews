@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
   }
 }
 
-val Context.dataStore : DataStore<Preferences> by preferencesDataStore(name = "user")
 
 @Composable
 fun App() {

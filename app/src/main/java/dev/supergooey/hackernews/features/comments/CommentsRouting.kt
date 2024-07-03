@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import dev.supergooey.hackernews.features.login.CookieJar
+import dev.supergooey.hackernews.webClient
 import kotlinx.serialization.Serializable
 
 sealed interface CommentsDestinations {
@@ -18,10 +18,11 @@ sealed interface CommentsDestinations {
 fun NavGraphBuilder.commentsRoutes() {
   composable<CommentsDestinations.Comments> { entry ->
     val comments: CommentsDestinations.Comments = entry.toRoute()
+    val context = LocalContext.current
     val model = viewModel<CommentsViewModel>(
       factory = CommentsViewModel.Factory(
         comments.storyId,
-        CookieJar(LocalContext.current)
+        context.webClient()
       )
     )
     val state by model.state.collectAsState()
