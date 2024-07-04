@@ -3,6 +3,7 @@ package dev.supergooey.hackernews.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
@@ -20,6 +21,22 @@ data class ItemPage(
 class HackerNewsWebClient(
   private val httpClient: OkHttpClient,
 ) {
+  suspend fun login(username: String, password: String) {
+    return withContext(Dispatchers.IO) {
+      val response = httpClient.newCall(
+        Request.Builder()
+          .url("https://news.ycombinator.com/login")
+          .post(
+            FormBody.Builder()
+              .add("acct", username)
+              .add("pw", password)
+              .build()
+          )
+          .build()
+      ).execute()
+      val document = Jsoup.parse(response.body?.string()!!)
+    }
+  }
   suspend fun getItemPage(itemId: Long): ItemPage {
     return withContext(Dispatchers.IO) {
       // request page

@@ -1,6 +1,5 @@
 package dev.supergooey.hackernews.features.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,22 +18,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.supergooey.hackernews.ReceiveCookieInterceptor
-import dev.supergooey.hackernews.data.CookieStorage
+import dev.supergooey.hackernews.data.HackerNewsWebClient
 import dev.supergooey.hackernews.ui.theme.HackerNewsTheme
+import dev.supergooey.hackernews.webClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import okhttp3.FormBody
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-
-
 
 
 @Serializable
@@ -42,9 +34,10 @@ data object Login
 
 @Composable
 fun LoginScreen() {
+  val context = LocalContext.current
   val model = viewModel<LoginViewModel>(
     factory = LoginViewModel.Factory(
-      cookieJar = CookieStorage(LocalContext.current)
+      webClient = context.webClient()
     )
   )
   val state by model.state.collectAsState()
@@ -94,16 +87,14 @@ sealed interface LoginAction {
   data object LoginTapped : LoginAction
 }
 
-class LoginViewModel(private val cookieStorage: CookieStorage) : ViewModel() {
+class LoginViewModel(private val webClient: HackerNewsWebClient) : ViewModel() {
   private val internalState = MutableStateFlow(LoginState.empty)
   val state = internalState.asStateFlow()
-  private val client = OkHttpClient.Builder()
-    .build()
 
   @Suppress("UNCHECKED_CAST")
-  class Factory(private val cookieJar: CookieStorage) : ViewModelProvider.Factory {
+  class Factory(private val webClient: HackerNewsWebClient) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return LoginViewModel(cookieJar) as T
+      return LoginViewModel(webClient) as T
     }
   }
 
@@ -111,19 +102,10 @@ class LoginViewModel(private val cookieStorage: CookieStorage) : ViewModel() {
     when (action) {
       LoginAction.LoginTapped -> {
         viewModelScope.launch(Dispatchers.IO) {
-          val call = client.newCall(
-            Request.Builder()
-              .url("https://news.ycombinator.com/login")
-              .post(
-                FormBody.Builder()
-                  .add("acct", internalState.value.username)
-                  .add("pw", internalState.value.password)
-                  .build()
-              )
-              .build()
+          webClient.login(
+            username = internalState.value.username,
+            password = internalState.value.password
           )
-          val response = call.execute()
-          Log.d("Login", "Response: ${response.code}")
         }
       }
 
