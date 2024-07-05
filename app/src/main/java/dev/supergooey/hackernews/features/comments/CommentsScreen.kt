@@ -208,7 +208,7 @@ private fun ItemHeaderPreview() {
   HackerNewsTheme {
     ItemHeader(
       state = HeaderState(
-        title = "Show HN: A super cool HN client for Android",
+        title = "Show HN: A super neat HN client for Android",
         author = "rikinm",
         points = 69
       ),
