@@ -1,5 +1,6 @@
 package dev.supergooey.hackernews.features.stories
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,6 +61,7 @@ fun StoriesScreen(
     ) {
       items(state.stories) { item ->
         StoryRow(
+          modifier = Modifier.animateItem(),
           item = item,
           onClick = {
             actions(StoriesAction.SelectStory(it.id))
@@ -174,6 +176,7 @@ private fun StoryRowLoadingPreview() {
 
 @Composable
 fun StoryRow(
+  modifier: Modifier = Modifier,
   item: StoryItem,
   onClick: (StoryItem.Content) -> Unit,
   onCommentClicked: (StoryItem.Content) -> Unit
@@ -181,7 +184,7 @@ fun StoryRow(
   when (item) {
     is StoryItem.Content -> {
       Row(
-        modifier = Modifier
+        modifier = modifier
           .fillMaxWidth()
           .heightIn(min = 80.dp)
           .background(color = MaterialTheme.colorScheme.background)
@@ -241,7 +244,7 @@ fun StoryRow(
     }
     is StoryItem.Loading -> {
       Row(
-        modifier = Modifier
+        modifier = modifier
           .fillMaxWidth()
           .heightIn(min = 80.dp)
           .background(color = MaterialTheme.colorScheme.background)
