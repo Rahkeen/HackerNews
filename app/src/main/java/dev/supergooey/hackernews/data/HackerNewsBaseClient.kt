@@ -8,7 +8,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-private const val BASE_FIREBASE_URL = "https://hacker-news.firebaseio.com/v0/"
+const val BASE_FIREBASE_URL = "https://hacker-news.firebaseio.com/v0/"
 
 @Serializable
 data class Item(
@@ -31,13 +31,11 @@ interface HackerNewsBaseApi {
   suspend fun getItem(@Path("id") itemId: Long): Item
 }
 
-
-object HackerNewsBaseClient {
-  private val json = Json { ignoreUnknownKeys = true }
+class HackerNewsBaseClient(json: Json) {
   private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_FIREBASE_URL)
     .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
     .build()
 
-  val api: HackerNewsBaseApi = retrofit.create(HackerNewsBaseApi::class.java)
+  val api = retrofit.create(HackerNewsBaseApi::class.java)
 }

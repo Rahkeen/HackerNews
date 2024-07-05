@@ -8,7 +8,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-private const val BASE_ALGOLIA_URL = "https://hn.algolia.com/api/v1/"
+private const val BASE_SEARCH_URL = "https://hn.algolia.com/api/v1/"
 
 @Serializable
 data class ItemResponse(
@@ -26,10 +26,9 @@ interface HackerNewsAlgoliaApi {
   suspend fun getItem(@Path("id") itemId: Long): ItemResponse
 }
 
-object HackerNewsAlgoliaClient {
-  private val json = Json { ignoreUnknownKeys = true }
+class HackerNewsSearchClient(json: Json) {
   private val retrofit = Retrofit.Builder()
-    .baseUrl(BASE_ALGOLIA_URL)
+    .baseUrl(BASE_SEARCH_URL)
     .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
     .build()
 

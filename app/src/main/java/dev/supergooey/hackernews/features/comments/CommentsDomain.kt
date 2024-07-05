@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import dev.supergooey.hackernews.data.HackerNewsAlgoliaClient
+import dev.supergooey.hackernews.data.HackerNewsSearchClient
 import dev.supergooey.hackernews.data.ItemResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,14 +45,17 @@ data class HeaderState(
   val points: Int
 )
 
-class CommentsViewModel(private val itemId: Long) : ViewModel() {
+class CommentsViewModel(
+  private val itemId: Long,
+  private val searchClient: HackerNewsSearchClient
+) : ViewModel() {
   private val internalState = MutableStateFlow(CommentsState.empty)
   val state = internalState.asStateFlow()
 
   init {
     viewModelScope.launch {
       withContext(Dispatchers.IO) {
-        val response = HackerNewsAlgoliaClient.api.getItem(itemId)
+        val response = searchClient.api.getItem(itemId)
         val comments = response.children.map { rootComment ->
           rootComment.createCommentState(0)
         }
@@ -84,9 +87,12 @@ class CommentsViewModel(private val itemId: Long) : ViewModel() {
 
 
   @Suppress("UNCHECKED_CAST")
-  class Factory(private val itemId: Long) : ViewModelProvider.Factory {
+  class Factory(
+    private val itemId: Long,
+    private val searchClient: HackerNewsSearchClient
+  ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return CommentsViewModel(itemId) as T
+      return CommentsViewModel(itemId, searchClient) as T
     }
   }
 }

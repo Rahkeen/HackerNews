@@ -1,7 +1,7 @@
 package dev.supergooey.hackernews.features.stories
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dev.supergooey.hackernews.data.HackerNewsBaseClient
 import dev.supergooey.hackernews.data.Item
@@ -34,13 +34,13 @@ sealed class StoriesAction {
   data class SelectComments(val id: Long): StoriesAction()
 }
 
-// TODO: Second pass at Navigation Setup
+// TODO(rikin): Second pass at Navigation Setup
 sealed interface StoriesNavigation {
   data class GoToStory(val closeup: StoriesDestinations.Closeup): StoriesNavigation
   data class GoToComments(val comments: CommentsDestinations.Comments): StoriesNavigation
 }
 
-class StoriesViewModel() : ViewModel() {
+class StoriesViewModel(private val baseClient: HackerNewsBaseClient) : ViewModel() {
   private val internalState = MutableStateFlow(StoriesState(stories = emptyList()))
   val state = internalState.asStateFlow()
 
@@ -53,11 +53,10 @@ class StoriesViewModel() : ViewModel() {
       LoadStories -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
-            val ids = HackerNewsBaseClient.api.getTopStoryIds()
+            val ids = baseClient.api.getTopStoryIds()
             // now for each ID I need to load the item.
             ids.take(20).forEach { id ->
-              val item = HackerNewsBaseClient.api.getItem(id)
-              Log.d("API", "Story Loaded: ${item.url}")
+              val item = baseClient.api.getItem(id)
               if (item.type == "story" && item.url != null) {
                 internalState.update { current ->
                   current.copy(
@@ -77,6 +76,13 @@ class StoriesViewModel() : ViewModel() {
       is StoriesAction.SelectComments -> {
         // TODO
       }
+    }
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  class Factory(private val baseClient: HackerNewsBaseClient): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+      return StoriesViewModel(baseClient) as T
     }
   }
 }

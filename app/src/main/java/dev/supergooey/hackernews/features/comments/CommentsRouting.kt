@@ -2,10 +2,12 @@ package dev.supergooey.hackernews.features.comments
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import dev.supergooey.searchClient
 import kotlinx.serialization.Serializable
 
 sealed interface CommentsDestinations {
@@ -15,9 +17,13 @@ sealed interface CommentsDestinations {
 
 fun NavGraphBuilder.commentsRoutes() {
   composable<CommentsDestinations.Comments> { entry ->
+    val context = LocalContext.current
     val comments: CommentsDestinations.Comments = entry.toRoute()
     val model = viewModel<CommentsViewModel>(
-      factory = CommentsViewModel.Factory(comments.storyId)
+      factory = CommentsViewModel.Factory(
+        itemId = comments.storyId,
+        searchClient = context.searchClient()
+      )
     )
     val state by model.state.collectAsState()
     CommentsScreen(state)
