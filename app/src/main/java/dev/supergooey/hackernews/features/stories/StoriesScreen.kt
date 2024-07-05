@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -259,20 +258,35 @@ fun StoryRow(
           Box(
             modifier = Modifier
               .fillMaxWidth(0.8f)
-              .height(30.dp)
+              .height(20.dp)
               .clip(CircleShape)
               .background(color = Color.LightGray)
           )
           Box(
             modifier = Modifier
               .fillMaxWidth(0.45f)
-              .height(30.dp)
+              .height(20.dp)
               .clip(CircleShape)
               .background(color = Color.Gray)
           )
-          Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.width(30.dp).height(20.dp).clip(CircleShape).background(Color.DarkGray))
-            Box(modifier = Modifier.width(40.dp).height(20.dp).clip(CircleShape).background(HNOrange))
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Box(
+              modifier = Modifier
+                .width(30.dp)
+                .height(14.dp)
+                .clip(CircleShape)
+                .background(Color.DarkGray)
+            )
+            Box(
+              modifier = Modifier
+                .width(40.dp)
+                .height(14.dp)
+                .clip(CircleShape)
+                .background(HNOrange)
+            )
           }
         }
       }
