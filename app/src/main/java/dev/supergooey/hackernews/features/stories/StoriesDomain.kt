@@ -1,10 +1,9 @@
 package dev.supergooey.hackernews.features.stories
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dev.supergooey.hackernews.data.HackerNewsBaseClient
-import dev.supergooey.hackernews.data.Item
 import dev.supergooey.hackernews.features.comments.CommentsDestinations
 import dev.supergooey.hackernews.features.stories.StoriesAction.LoadStories
 import kotlinx.coroutines.Dispatchers
@@ -15,32 +14,34 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 data class StoriesState(
-  val stories: List<Item>,
+  val stories: List<StoryItem>,
 )
 
-sealed interface StoryItem {
-  data class Loading(val id: Long) : StoryItem
+sealed class StoryItem(open val id: Long) {
+  data class Loading(override val id: Long) : StoryItem(id)
   data class Content(
-    val id: Long,
+    override val id: Long,
     val title: String,
     val author: String,
-    val url: String
-  ) : StoryItem
+    val score: Int,
+    val commentCount: Int,
+    val url: String?
+  ) : StoryItem(id)
 }
 
 sealed class StoriesAction {
   data object LoadStories : StoriesAction()
   data class SelectStory(val id: Long) : StoriesAction()
-  data class SelectComments(val id: Long): StoriesAction()
+  data class SelectComments(val id: Long) : StoriesAction()
 }
 
-// TODO: Second pass at Navigation Setup
+// TODO(rikin): Second pass at Navigation Setup
 sealed interface StoriesNavigation {
-  data class GoToStory(val closeup: StoriesDestinations.Closeup): StoriesNavigation
-  data class GoToComments(val comments: CommentsDestinations.Comments): StoriesNavigation
+  data class GoToStory(val closeup: StoriesDestinations.Closeup) : StoriesNavigation
+  data class GoToComments(val comments: CommentsDestinations.Comments) : StoriesNavigation
 }
 
-class StoriesViewModel() : ViewModel() {
+class StoriesViewModel(private val baseClient: HackerNewsBaseClient) : ViewModel() {
   private val internalState = MutableStateFlow(StoriesState(stories = emptyList()))
   val state = internalState.asStateFlow()
 
@@ -53,17 +54,32 @@ class StoriesViewModel() : ViewModel() {
       LoadStories -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
-            val ids = HackerNewsBaseClient.api.getTopStoryIds()
+            val ids = baseClient.api.getTopStoryIds()
             // now for each ID I need to load the item.
-            ids.take(20).forEach { id ->
-              val item = HackerNewsBaseClient.api.getItem(id)
-              Log.d("API", "Story Loaded: ${item.url}")
-              if (item.type == "story" && item.url != null) {
-                internalState.update { current ->
-                  current.copy(
-                    stories = current.stories.toMutableList().apply { add(item) }.toList()
-                  )
-                }
+            internalState.update { current ->
+              current.copy(
+                stories = ids.map { StoryItem.Loading(it) }
+              )
+            }
+            ids.forEach { id ->
+              val item = baseClient.api.getItem(id)
+              internalState.update { current ->
+                current.copy(
+                  stories = current.stories.map {
+                    if (it.id == item.id) {
+                      StoryItem.Content(
+                        id = item.id,
+                        title = item.title!!,
+                        author = item.by!!,
+                        score = item.score ?: 0,
+                        commentCount = item.descendants ?: 0,
+                        url = item.url
+                      )
+                    } else {
+                      it
+                    }
+                  }
+                )
               }
             }
           }
@@ -77,6 +93,13 @@ class StoriesViewModel() : ViewModel() {
       is StoriesAction.SelectComments -> {
         // TODO
       }
+    }
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  class Factory(private val baseClient: HackerNewsBaseClient) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+      return StoriesViewModel(baseClient) as T
     }
   }
 }
