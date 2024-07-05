@@ -13,6 +13,8 @@ kotlinx-serialization-json = "1.6.3"
 viewmodel = "2.8.2"
 navigation = "2.8.0-beta04"
 accompanist = "0.34.0"
+emergePlugin = "3.1.1"
+emergeSnapshots = "1.1.2"
 composeBom = "2024.06.00"
 
 [libraries]
@@ -41,9 +43,12 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
+emerge-snapshots = { group = "com.emergetools.snapshots", name = "snapshots", version.ref = "emergeSnapshots" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+emerge = { id = "com.emergetools.android", version.ref = "emergePlugin"}
 
