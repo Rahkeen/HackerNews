@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 enum class FeedType(val label: String) {
   Top("Top"),
-  New("News")
+  New("New")
 }
 data class StoriesState(
   val stories: List<StoryItem>,

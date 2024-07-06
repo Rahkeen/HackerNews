@@ -99,7 +99,7 @@ fun StoriesScreen(
 
 @Preview
 @Composable
-private fun TitleDisplayPreview() {
+private fun FeedSelectionPreview() {
   HackerNewsTheme {
     FeedSelection(
       feedType = FeedType.Top,
@@ -114,6 +114,7 @@ private fun FeedSelection(
   onSelected: (FeedType) -> Unit,
 ) {
   val selectedTab = remember(feedType) { feedType.ordinal }
+
   TabRow(
     selectedTabIndex = selectedTab,
     modifier = Modifier.wrapContentWidth(),
