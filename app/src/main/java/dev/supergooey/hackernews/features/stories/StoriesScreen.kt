@@ -137,9 +137,6 @@ private fun FeedSelection(
                 color = HNOrange,
                 strokeWidth = 4f,
                 cap = StrokeCap.Round,
-                pathEffect = PathEffect.dashPathEffect(
-                  intervals = floatArrayOf(20f, 20f)
-                )
               )
             }
         )
