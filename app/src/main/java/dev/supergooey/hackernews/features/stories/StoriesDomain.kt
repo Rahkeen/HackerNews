@@ -13,8 +13,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+enum class FeedType(val label: String) {
+  Top("Top"),
+  New("News")
+}
 data class StoriesState(
   val stories: List<StoryItem>,
+  val feed: FeedType = FeedType.New
+
 )
 
 sealed class StoryItem(open val id: Long) {
@@ -33,6 +39,7 @@ sealed class StoriesAction {
   data object LoadStories : StoriesAction()
   data class SelectStory(val id: Long) : StoriesAction()
   data class SelectComments(val id: Long) : StoriesAction()
+  data class SelectFeed(val feed: FeedType) : StoriesAction()
 }
 
 // TODO(rikin): Second pass at Navigation Setup
@@ -54,7 +61,15 @@ class StoriesViewModel(private val baseClient: HackerNewsBaseClient) : ViewModel
       LoadStories -> {
         viewModelScope.launch {
           withContext(Dispatchers.IO) {
-            val ids = baseClient.api.getTopStoryIds()
+            val ids = when(internalState.value.feed) {
+              FeedType.Top -> {
+                baseClient.api.getTopStoryIds()
+              }
+              FeedType.New -> {
+                baseClient.api.getNewStoryIds()
+              }
+            }
+
             // now for each ID I need to load the item.
             internalState.update { current ->
               current.copy(
@@ -92,6 +107,16 @@ class StoriesViewModel(private val baseClient: HackerNewsBaseClient) : ViewModel
 
       is StoriesAction.SelectComments -> {
         // TODO
+      }
+
+      is StoriesAction.SelectFeed -> {
+        internalState.update { current ->
+          current.copy(
+            feed = action.feed,
+            stories = emptyList()
+          )
+        }
+        actions(LoadStories)
       }
     }
   }
