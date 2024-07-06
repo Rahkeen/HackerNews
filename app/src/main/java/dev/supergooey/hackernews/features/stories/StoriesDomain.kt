@@ -19,7 +19,7 @@ enum class FeedType(val label: String) {
 }
 data class StoriesState(
   val stories: List<StoryItem>,
-  val feed: FeedType = FeedType.New
+  val feed: FeedType = FeedType.Top
 
 )
 
