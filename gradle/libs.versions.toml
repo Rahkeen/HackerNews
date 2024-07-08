@@ -13,6 +13,7 @@ kotlinx-serialization-json = "1.6.3"
 viewmodel = "2.8.2"
 navigation = "2.8.0-beta04"
 accompanist = "0.34.0"
+browser = "1.5.0"
 emergePlugin = "3.1.1"
 emergeSnapshots = "1.1.2"
 composeBom = "2024.06.00"
@@ -26,6 +27,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewmodel" }
 androidx-navigation = { group = "androidx.navigation", name = "navigation-compose",  version.ref = "navigation"}
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
